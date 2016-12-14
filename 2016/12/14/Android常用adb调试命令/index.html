@@ -1,0 +1,80 @@
+<h1 id="Android常用ADB调试命令"><a href="#Android常用ADB调试命令" class="headerlink" title="Android常用ADB调试命令"></a>Android常用ADB调试命令</h1><ul>
+<li>从 <strong>开发板或Android</strong> 手机开机开始，以及 <strong>开机后</strong> 的常用指令，测试 <strong>命令行程序</strong> 的常用指令，以及必要时候需要用adb命令来 <strong>开启Android程序</strong> ，其中包括push，pull等常用命令等都有介绍，如果有需求或者建议可以留言给我，会及时更新。</li>
+</ul>
+<blockquote>
+<ul>
+<li>开机后</li>
+<li>常用命令</li>
+<li>命令行程序指令</li>
+<li>Android程序指令</li>
+</ul>
+</blockquote>
+<h2 id="1-开机后"><a href="#1-开机后" class="headerlink" title="1.开机后"></a>1.开机后</h2><ul>
+<li>一般的开发板或Android手机开机后，第一件事建议是执行 <strong>adb root</strong> 指令，用来获取设备的root权限</li>
+<li>上面的指令完成后，需要 <strong>adb remount</strong> ，这个命令用来获取向System(系统)读写文件的权限，比如经常会向 <strong>/system/</strong>目录或者其子目录拷贝文件或者删除文件等操作，不然会有 <strong>Read-only file system</strong> (只能读不能写)这样的错误提示。</li>
+<li>接下来，如果需要进入设备，执行 <strong>adb shell</strong> ，这时候你应该看到你的光标前面是一个 <strong>$</strong> 或者 <strong>#</strong> 符号，$符号表示没有获得系统的读写权限，可以执行 <strong>exit</strong> 退出shell，然后重新 <strong>adb remount</strong> ，看到 <strong>success</strong> 就可以了。所以如果进shell看到的是 <strong>#</strong> 就没有问题了，可以进行下一步的操作。</li>
+</ul>
+<h2 id="2-常用命令"><a href="#2-常用命令" class="headerlink" title="2.常用命令"></a>2.常用命令</h2><ul>
+<li><p>开发人员经常会把很多测试程序发给你，可能是命令行程序或者Android程序，这里不可避免要把这些文件从你的电脑复制到你需要测试的设备里，所以最常用的就是 <strong>push</strong> 和 <strong>pull</strong> 命令啦，下面依次介绍一下这两条指令：</p>
+<blockquote>
+<ul>
+<li><strong>adb push {local path of your file} {target path of your file}</strong> <br>这个指令用来向机器中复制文件，即 <strong>电脑-&gt;目标设备</strong> ，这里的local path of your file就是文件在你电脑上存放的路径， <strong>注意没有那个大括号{} ！！！</strong> ，同样，第二个路径就是你要向机器或手机中push的路径， <strong>push成功会显示100%</strong> , <strong>还要注意下每个部分中间都是有空格的</strong> 。</li>
+<li><strong>adb pull {target path of your file} {local path of your file}</strong> <br>这条指令的作用和上面的指令作用刚好相反，就是把目标设备中的文件复制到你的电脑上，即 <strong>目标设备-&gt;电脑</strong> ，这里的第一个路径是文件在机器中的路径，第二个路径就是你想把它放到电脑的什么位置。</li>
+</ul>
+</blockquote>
+</li>
+<li><p>使用中，你需要经常在文件夹里进进出出，还经常要查看文件夹里有什么文件，所以要经常使用如下指令：</p>
+<blockquote>
+<ul>
+<li><strong>cd</strong> ——进入某个文件夹，比如有个文件夹叫fez，就是 <strong>cd fez</strong></li>
+<li><strong>cd ..</strong> ——返回上一层目录，比如从fez中返回上层目录，就是 <strong>cd ..</strong></li>
+<li><strong>cd /</strong> ——返回根目录，就是回到你一开始进入shell的地方</li>
+<li><strong>ll</strong> ——这个是小写字母L，列出当前目录下所有文件和文件夹，可以配合grep，别急看下面grep的说明</li>
+<li><strong>rm</strong> ——删除某个文件，比如有个文件叫fez.txt，就是 <strong>rm fez.txt</strong></li>
+<li><strong>rm -r</strong> ——删除文件夹，比如删除fez文件夹，就是 <strong>rm -r fez</strong> </li>
+<li><strong>grep “something”</strong> ——配合其他操作可以起到过滤的左右，比如ll浏览文件，如果文件很多，想找某一个文件就会很累，这时候就可以 <strong>ll | grep “abc”</strong> 就可以列出当前目录下包含abc字符串的文件，这样找文件就很清楚了</li>
+<li><strong>md5 something</strong> ——这个命令用来查看md5值，每一个文件都有一个属于自己的md5，如果两个文件完全一样，那么他们的md5也一定是一样的，所以通过查看两个文件的md5值，可以判断他们是不是两个完全相同的文件</li>
+<li><strong>chmod</strong> ——这个命令用来修改文件的读写权限，比如你用push命令向设备中拷贝了一个可执行文件，一般来说是没法执行的,会提示can’t execute: Permission denied，这就说明你需要给它权限，一般来说，执行下面这个命令就可以了，比如可执行文件叫fez，那这样就好了： <strong>chmod 777 fez</strong> ，然后可以用 <strong>ll</strong> 看一下，她的权限信息，类似于 <strong>rwxrwxrwx</strong> 这样。</li>
+<li><strong>chmod -R</strong> ——这个指令和上面的是一个意思，不过区别是它是用来给文件夹以及文件夹里面所有的子文件的权限的，举个栗子： <strong>chmod-R 777 fez</strong> ,这样操作以后，fez文件夹以及下面所有的子文件，就全部拥有最高的777权限的，至于777表示什么，简单说下就是 <strong>rwxrwxrwx</strong> 权限，具体指什么就不多说了</li>
+<li><strong>top</strong> ——测试中你可能经常需要查看cpu的使用率，直接举个栗子说吧： <strong>top -m 5 -d 2 -s cpu</strong> ，这句话的意思就是每次最多显示5条数据，每隔2s显示一次，以cpu为主要参考排序，相信一眼就能看出来了，-m就是MAX，-d就是频率，-s我猜是select。</li>
+<li><strong>mkdir</strong> ——这句话意思就是创建一个文件夹，比我我现在要创建一个叫fez的文件夹，这样做 <strong>mkdir fez</strong> ，如果没有什么错误提示，那文件夹就创建好了。</li>
+</ul>
+</blockquote>
+</li>
+</ul>
+<h2 id="3-命令行程序指令"><a href="#3-命令行程序指令" class="headerlink" title="3. 命令行程序指令"></a>3. 命令行程序指令</h2><ul>
+<li>比如程序员给你了一大堆文件，里面有可执行测试程序，配置文件，还有很多各种各样的so库，举个栗子，如图所示:<br><img src="http://i.imgur.com/jfilcU9.png" alt="测试文件目录"><br>你看，这里面有so库，配置文件，歌曲文件，以及像sai_listdev和sai_mictest这样的可执行程序。我现在要你把它push到”/data/fez”文件夹，怎么做？</li>
+</ul>
+<blockquote>
+<ol>
+<li>adb shell，进入到shell里面</li>
+<li>cd data，到data目录下</li>
+<li>mkdir fez，创建fez文件夹</li>
+<li>退出adb，执行下面的命令(去看命令):<br>这些命令在上面基本都介绍过了，可以尝试自己输一下</li>
+</ol>
+</blockquote>
+<pre><code>adb push libsai_denoise.so /system/lib/
+adb push libsai_micarray.so /system/lib/
+adb push libsai_micbasex.so /system/lib/
+adb push sai_config.txt /data/
+adb push wopt_5mic.bin /data/
+adb push sai_listdev /data/
+adb push sai_mictest /data/
+adb shell chmod 777 /data/sai_listdev
+adb shell chmod 777 /data/sai_mictest
+</code></pre><ul>
+<li>存在另一种情况（程序员会给你特意说明）。看上面的so库，都push到了”system/lib”目录下，但是如果让你push到刚才的”/data/fez”目录下，而且要测试程序可以正常使用，那怎么办呢，在运行命令行之前执行一下下面这条命令 <strong>export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:.</strong> 就可以了</li>
+<li>现在准备工作做完了，怎么运行测试文件？这样做，在存放测试文件的目录下，执行 <strong>./sai_listdev</strong> 就可以了。</li>
+</ul>
+<h2 id="4-Android程序指令"><a href="#4-Android程序指令" class="headerlink" title="4. Android程序指令"></a>4. Android程序指令</h2><ul>
+<li>如果给了你一个Android程序，但是你没有屏幕，也没有Android的开发软件，那就用adb吧<blockquote>
+<ul>
+<li><strong>adb install “your apk”</strong> ——安装Android程序的apk</li>
+<li><strong>adb uninstall “apk的包名</strong> ——卸载Android程序，这个包名不知道的话，问下程序猿</li>
+<li><strong>am start -n “包名”/“MainActivity的名字”</strong> ——不知道对应的名字就问下程序猿<br>举个栗子：我的包名叫com.fez.smart，MainActivity的名字叫MyActivity，那命令就是这样<br> <strong>am start -n com.fez.smart/MyActivity</strong> </li>
+<li><strong>am force-stop “包名”</strong> ——安全停止你刚才运行的程序，比如:<br> <strong>am force-stop com.fez.smart</strong> </li>
+<li>logcat是个很重要的工具，具体有什么关键日志，一定要跟你交接的程序猿了解清楚都有什么日志可以给你看</li>
+</ul>
+</blockquote>
+</li>
+</ul>
