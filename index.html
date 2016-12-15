@@ -368,12 +368,12 @@
 <li>Android程序指令</li>
 </ul>
 </blockquote>
-<h2 id="1-开机后"><a href="#1-开机后" class="headerlink" title="1.开机后"></a>1.开机后</h2><ul>
+<h2 id="1-开机后"><a href="#1-开机后" class="headerlink" title="1. 开机后"></a>1. 开机后</h2><ul>
 <li>一般的开发板或Android手机开机后，第一件事建议是执行 <strong>adb root</strong> 指令，用来获取设备的root权限</li>
 <li>上面的指令完成后，需要 <strong>adb remount</strong> ，这个命令用来获取向System(系统)读写文件的权限，比如经常会向 <strong>/system/</strong>目录或者其子目录拷贝文件或者删除文件等操作，不然会有 <strong>Read-only file system</strong> (只能读不能写)这样的错误提示。</li>
 <li>接下来，如果需要进入设备，执行 <strong>adb shell</strong> ，这时候你应该看到你的光标前面是一个 <strong>$</strong> 或者 <strong>#</strong> 符号，$符号表示没有获得系统的读写权限，可以执行 <strong>exit</strong> 退出shell，然后重新 <strong>adb remount</strong> ，看到 <strong>success</strong> 就可以了。所以如果进shell看到的是 <strong>#</strong> 就没有问题了，可以进行下一步的操作。</li>
 </ul>
-<h2 id="2-常用命令"><a href="#2-常用命令" class="headerlink" title="2.常用命令"></a>2.常用命令</h2><ul>
+<h2 id="2-常用命令"><a href="#2-常用命令" class="headerlink" title="2. 常用命令"></a>2. 常用命令</h2><ul>
 <li><p>开发人员经常会把很多测试程序发给你，可能是命令行程序或者Android程序，这里不可避免要把这些文件从你的电脑复制到你需要测试的设备里，所以最常用的就是 <strong>push</strong> 和 <strong>pull</strong> 命令啦，下面依次介绍一下这两条指令：</p>
 <blockquote>
 <ul>
